@@ -36,11 +36,16 @@ jobs:
           mkdir -p .next/standalone/.next/static
           cp -r .next/static/* .next/standalone/.next/static
 
+      - name: Zip artifact for deployment
+        run: |
+          cd .next/standalone
+          zip -r ../../release.zip .
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: node-app
-          path: .next/standalone
+          path: release.zip
 
   deploy:
     runs-on: ubuntu-latest
@@ -58,5 +63,5 @@ jobs:
         with:
           app-name: 'tech0-gen-11-step3-2-node-17'
           slot-name: 'Production'
-          package: .
+          package: release.zip
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_B0987160029C4408AF5976421A1FB18E }}
